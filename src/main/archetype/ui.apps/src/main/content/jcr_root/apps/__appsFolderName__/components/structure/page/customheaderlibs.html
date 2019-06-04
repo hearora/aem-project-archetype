@@ -18,18 +18,51 @@
 
 <!--/* Include Context Hub */-->
 <sly data-sly-resource="${symbol_dollar}{'contexthub' @ resourceType='granite/contexthub/components/contexthub'}"/>
+<sly data-sly-test="${symbol_dollar}{currentPage.listChildren}">
+    <sly data-sly-list.childPage="${symbol_dollar}{currentPage.listChildren @ begin = 0, end = 1}">
+		<sly data-sly-set.childPageTitle="${symbol_dollar}{childPage.title}"/>
+        <sly data-sly-test="${symbol_dollar}{childPage.listChildren}">
+        	<sly data-sly-list.subchildPage="${symbol_dollar}{childPage.listChildren @ begin = 0, end = 1}">
+            	<sly data-sly-set.subchildPageTitle="${symbol_dollar}{subchildPage.title}"/>
+                <sly data-sly-test="${symbol_dollar}{subchildPage.listChildren}">
+                	<sly data-sly-list.tertiarychild="${symbol_dollar}{subchildPage.listChildren @ begin = 0, end = 1}">
+                    	<sly data-sly-set.tertiarychildTitle="${symbol_dollar}{tertiarychild.title}"/>
+                    </sly>
+                </sly>
+            </sly>
+        </sly>
+	</sly>
+</sly>
 <!--/* Data layer JavaScript object: */-->
-<script>
-  var digitalData = {};
-  digitalData = {
+<script data-sly-use.page="com.adobe.cq.wcm.core.components.models.Page">
+        window.digitalData = window.digitalData || {};
+        window.digitalData.page = window.digitalData.page || {};
+		window.digitalData.page.attributes = window.digitalData.page.attributes || { };
+        window.digitalData.user = window.digitalData.user || { };
+				window.digitalData = {
 		  		  page: {
 		  			  pageInfo: {
-		  				  pageName: '${symbol_dollar}{currentPage.name @context="scriptString"}',
-		  				  pageURL : '${symbol_dollar}{currentPage.path @context="uri"}',
-		  				  pageType: '${symbol_dollar}{currentPage.name @context="scriptString"}',
-		  				  siteName: '${symbol_dollar}{request.serverName @context="scriptString"}'
-		  			  },
-  visitorProfile: {}
-   }
-
+		  				  pageName: '${symbol_dollar}{currentPage.title @context="scriptString"} | ${siteName}',
+		  				  pageURL : window.location.href,
+		  				  pageType: '${symbol_dollar}{page.templateName @context="unsafe"}',
+                          pageRef:  document.referrer,// Referring URL
+                          locale:	navigator.language,// Locale of the site 
+                          primaryCategory:'${symbol_dollar}{currentPage.title @context="scriptString"}', //Main Section as per the Site Hierarchy
+                          subCategory1: '${symbol_dollar}{childPageTitle @context="scriptString"}',//Site Section 1 as per the Site Hierarchy
+                          subCategory2: '${symbol_dollar}{subchildPageTitle @context="scriptString"}',//Site Section 2 as per the Site Hierarchy
+                          subCategory3: '${symbol_dollar}{tertiarychildTitle @context="scriptString"}',//Site Section 3 as per the Site Hierarchy
+                          domain: window.location.hostname,// Domain of the site
+                          language: '${symbol_dollar}{page.language @context="unsafe"}', //Language where the user has visted(en, etc)
+                          country: navigator.language.split("-")[1] //Country where the user has visted(US, etc)
+                      },
+                      attributes:{
+                          isInternal: document.referrer.includes(window.location.host)? 'true' : 'false', //(internal traffic or navigated from referring URL)
+                          platform: /iPhone|iPad|iPod|Android/i.test(navigator.userAgent) ? 'Mobile' : 'Desktop' //(Desk, Mob or Tab)
+                      }
+                  },
+                    user:{
+                        customerType: '${symbol_dollar}{currentSession.userID ? currentSession.userID : "Guest" @context="scriptString"}',// Logged in or guest
+                        userAgent: navigator.userAgent
+						}
+                  }
 </script>
