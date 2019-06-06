@@ -61,7 +61,7 @@
                       }
                   },
                     user:{
-                        customerType: '${symbol_dollar}{currentSession.userID ? currentSession.userID : "Guest" @context="scriptString"}',// Logged in or guest
+                        customerType: '${symbol_dollar}{currentSession.userID != "anonymous" ? currentSession.userID : "Guest" @context="scriptString"}',// Logged in or guest
                         userAgent: navigator.userAgent
 						}
                   }
