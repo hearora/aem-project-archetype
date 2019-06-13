@@ -3,7 +3,7 @@ import java.util.regex.*
 import groovy.transform.Field
 
 def optionIncludeErrorHandler = request.getProperties().get("optionIncludeErrorHandler")
-def optionRunmodeConfigs = request.getProperties().get("optionRunmodeConfigs")
+def optionRunmodeConfigs = request.getProperties().get("createRunmodeConfigs")
 
 @Field def rootDir = new File(request.getOutputDirectory() + "/" + request.getArtifactId())
 @Field def uiAppsPackage = new File(rootDir, "ui.apps")
